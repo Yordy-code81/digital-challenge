@@ -2,7 +2,7 @@
 # Multi-stage Dockerfile para el Microservicio Customers (Spring Boot 3 + Java 17)
 # ==============================================================================
 
-# Etapa 1: Compilación y empaquetado con Maven
+# Etapa 1: Compilación, ejecución de pruebas unitarias y empaquetado con Maven
 FROM maven:3.9.6-eclipse-temurin-17 AS builder
 WORKDIR /app
 
@@ -10,9 +10,14 @@ WORKDIR /app
 COPY pom.xml .
 RUN mvn dependency:go-offline -B
 
-# Copiar código fuente y compilar artefacto JAR
+# Copiar código fuente
 COPY src ./src
-RUN mvn clean package -DskipTests
+
+# Ejecutar suite de pruebas unitarias obligatorias antes del despliegue
+RUN mvn test
+
+# Empaquetar artefacto JAR final
+RUN mvn package -DskipTests
 
 # Etapa 2: Imagen ligera de ejecución basada en JRE Alpine
 FROM eclipse-temurin:17-jre-alpine

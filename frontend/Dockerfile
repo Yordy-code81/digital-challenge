@@ -2,16 +2,21 @@
 # Multi-stage Dockerfile para la Aplicación Web Customers (React + Vite + Nginx)
 # ==============================================================================
 
-# Etapa 1: Compilación de la SPA con Node.js
+# Etapa 1: Compilación y ejecución de pruebas de la SPA con Node.js
 FROM node:20-alpine AS builder
 WORKDIR /app
 
 # Copiar manifiesto de dependencias y aprovechar cache
-COPY package.json ./
-RUN npm install
+COPY package.json package-lock.json ./
+RUN npm ci
 
-# Copiar código fuente y compilar bundle estático optimizado
+# Copiar código fuente
 COPY . .
+
+# Ejecutar suite de pruebas unitarias obligatorias antes de compilar
+RUN npm run test
+
+# Compilar bundle estático optimizado para producción
 RUN npm run build
 
 # Etapa 2: Servidor Web ultraligero Nginx Alpine
