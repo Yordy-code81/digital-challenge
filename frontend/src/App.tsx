@@ -20,6 +20,8 @@ export function App() {
   const [loadingCustomers, setLoadingCustomers] = useState(false);
   const [dniFilter, setDniFilter] = useState('');
   const [emailFilter, setEmailFilter] = useState('');
+  const [debouncedDni, setDebouncedDni] = useState('');
+  const [debouncedEmail, setDebouncedEmail] = useState('');
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
   const [totalElements, setTotalElements] = useState(0);
@@ -36,13 +38,23 @@ export function App() {
     });
   }, []);
 
-  // Fetch Clientes
+  // Debounce ÚNICAMENTE para los inputs de filtro de búsqueda
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedDni(dniFilter);
+      setDebouncedEmail(emailFilter);
+      setPage(0); // Reset a primera página solamente cuando el usuario escribe en los filtros
+    }, 350);
+    return () => clearTimeout(timer);
+  }, [dniFilter, emailFilter]);
+
+  // Fetch Clientes usando el estado debounced y la página seleccionada
   const fetchCustomers = useCallback(async () => {
     try {
       setLoadingCustomers(true);
       const data = await customerService.getCustomers({
-        dni: dniFilter.trim() || undefined,
-        email: emailFilter.trim() || undefined,
+        dni: debouncedDni.trim() || undefined,
+        email: debouncedEmail.trim() || undefined,
         page,
         size: 10,
         sortBy: 'createdAt',
@@ -56,7 +68,7 @@ export function App() {
     } finally {
       setLoadingCustomers(false);
     }
-  }, [dniFilter, emailFilter, page, showToast]);
+  }, [debouncedDni, debouncedEmail, page, showToast]);
 
   // Fetch Indicadores
   const fetchIndicators = useCallback(async () => {
@@ -71,21 +83,12 @@ export function App() {
     }
   }, [showToast]);
 
-  // Debounced filter effect
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setPage(0); // Reset a primera página al filtrar
-      fetchCustomers();
-    }, 350);
-    return () => clearTimeout(timer);
-  }, [dniFilter, emailFilter, fetchCustomers]);
-
-  // Page change effect
+  // Ejecutar fetchCustomers cuando cambian los filtros debounced o la página
   useEffect(() => {
     fetchCustomers();
-  }, [page, fetchCustomers]);
+  }, [fetchCustomers]);
 
-  // Load indicators when tab changes to indicators or on initial load
+  // Cargar indicadores al inicio y cuando sea necesario
   useEffect(() => {
     fetchIndicators();
   }, [fetchIndicators]);
