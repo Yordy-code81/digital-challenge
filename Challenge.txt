@@ -1,0 +1,51 @@
+RETO TÉCNICO FULL STACK
+
+1. TECNOLOGÍAS Y HERRAMIENTAS
+
+- Backend gestionado por Gradle o Maven.
+- Backend desarrollado en Spring Boot con Java 17 o superior.
+- Frontend desarrollado en React o Angular.
+- Frontend gestionado por npm o yarn.
+
+2. BACKEND: MICROSERVICIO CUSTOMERS
+
+Crear un microservicio customers con la siguiente funcionalidad:
+
+- Creación de cliente con los siguientes campos:
+  - Nombre
+  - Apellido
+  - Email
+  - DNI
+  - Fecha de creación
+  - Fecha de nacimiento
+
+- Consulta de clientes por DNI, email o sin filtros.
+
+- Consulta de indicadores:
+  - Cantidad de clientes nacidos por mes/año.
+  - Mes/año con mayor cantidad de clientes nacidos.
+  - Mes/año con menor cantidad de clientes nacidos.
+  - Tasa de natalidad de cada mes.
+
+3. ENTREGABLES DEL BACKEND
+
+- Colección de Postman para consumir los 2 endpoints del microservicio.
+- Código subido a GitHub.
+- Archivo README.md que documente el funcionamiento y la instalación del producto.
+- Al menos una prueba unitaria para una de las operaciones del servicio.
+
+4. FRONTEND: APLICACIÓN WEB CUSTOMERS
+
+La aplicación web debe incluir las siguientes funcionalidades:
+
+- Consulta de clientes en una tabla o lista.
+- Filtro de búsqueda de clientes por DNI o email.
+- Formulario de creación de clientes.
+- Consulta de indicadores en una tabla o gráfico.
+- Comunicación con el backend previamente creado.
+
+5. ENTREGABLES DEL FRONTEND
+
+- Código subido a GitHub.
+- Archivo README.md que documente el funcionamiento y la instalación del producto.
+- Al menos una prueba unitaria.

@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  oracle-db:
+    image: gvenzl/oracle-free:slim
+    container_name: customers-oracle-db
+    environment:
+      ORACLE_PASSWORD: customers_password
+      APP_USER: customers_user
+      APP_USER_PASSWORD: customers_password
+    ports:
+      - "1521:1521"
+    volumes:
+      - oracle_data:/opt/oracle/oradata
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: customers-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@oracle-db:1521/FREEPDB1
+      SPRING_DATASOURCE_USERNAME: customers_user
+      SPRING_DATASOURCE_PASSWORD: customers_password
+    ports:
+      - "8080:8080"
+    depends_on:
+      oracle-db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: customers-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  oracle_data:

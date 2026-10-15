@@ -1,0 +1,233 @@
+{
+  "info": {
+    "_postman_id": "c1f7a4e0-94a1-4ef8-a28d-192a8e8b0a99",
+    "name": "Customers Microservice API - Oracle Database",
+    "description": "Colección de Postman para pruebas del microservicio Customers: Creación, Consultas y Consulta de Indicadores de Natalidad.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Crear Cliente (POST)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201 Created\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "pm.test(\"Response contains customer ID and details\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.id).to.not.be.null;",
+              "    pm.expect(jsonData.dni).to.eql(\"79881122\");",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"Renzo\",\n  \"lastName\": \"Salazar\",\n  \"email\": \"renzo.salazar@example.com\",\n  \"dni\": \"79881122\",\n  \"birthDate\": \"1996-05-18\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/customers",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "customers"
+          ]
+        },
+        "description": "Endpoint para registrar un nuevo cliente con validación de DNI y correo único."
+      },
+      "response": []
+    },
+    {
+      "name": "2. Consultar Clientes - Sin Filtros (GET)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test(\"Response is paginated\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('content');",
+              "    pm.expect(jsonData).to.have.property('totalElements');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/customers?page=0&size=10",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "customers"
+          ],
+          "query": [
+            {
+              "key": "page",
+              "value": "0"
+            },
+            {
+              "key": "size",
+              "value": "10"
+            }
+          ]
+        },
+        "description": "Obtiene la lista paginada de clientes sin filtros."
+      },
+      "response": []
+    },
+    {
+      "name": "3. Consultar Clientes - Filtro por DNI (GET)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/customers?dni=72458912",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "customers"
+          ],
+          "query": [
+            {
+              "key": "dni",
+              "value": "72458912"
+            }
+          ]
+        },
+        "description": "Consulta clientes filtrando por documento de identidad exacto."
+      },
+      "response": []
+    },
+    {
+      "name": "4. Consultar Clientes - Filtro por Email (GET)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/customers?email=carlos",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "customers"
+          ],
+          "query": [
+            {
+              "key": "email",
+              "value": "carlos"
+            }
+          ]
+        },
+        "description": "Consulta clientes filtrando por correo electrónico (coincidencia parcial o exacta)."
+      },
+      "response": []
+    },
+    {
+      "name": "5. Consultar Indicadores de Natalidad (GET)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200 OK\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test(\"Contains all required indicators\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('totalCustomers');",
+              "    pm.expect(jsonData).to.have.property('birthsByPeriod');",
+              "    pm.expect(jsonData).to.have.property('peakPeriod');",
+              "    pm.expect(jsonData).to.have.property('lowestPeriod');",
+              "    pm.expect(jsonData).to.have.property('monthlyBirthRates');",
+              "    pm.expect(jsonData.monthlyBirthRates.length).to.eql(12);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/v1/customers/indicators",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "customers",
+            "indicators"
+          ]
+        },
+        "description": "Obtiene métricas analíticas de natalidad: nacidos por mes/año, período pico, período valle y distribución mensual."
+      },
+      "response": []
+    }
+  ]
+}
