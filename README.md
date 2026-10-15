@@ -159,7 +159,6 @@ El proyecto incluye suites completas de pruebas automatizadas:
 - [x] Código fuente del microservicio Backend en Java 17 y Spring Boot.
 - [x] Código fuente de la aplicación Frontend en React 18, TypeScript y Tailwind CSS.
 - [x] Colección de Postman: `backend/customers-api.postman_collection.json`.
-- [x] Propuesta técnica de diseño y arquitectura: `MySolution.md`.
 - [x] Script DDL para Oracle Database: `backend/src/main/resources/schema-oracle.sql`.
 - [x] Archivos `README.md` detallados en la raíz, en `backend/` y en `frontend/`.
 - [x] Dockerfiles multi-stage con ejecución de tests obligatorios antes del empaquetado.

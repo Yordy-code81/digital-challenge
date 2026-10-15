@@ -36,3 +36,6 @@ yarn-error.log*
 
 # Docker volumes
 oracle_data/
+
+# Documentos internos / propuesta técnica personal
+MySolution.md
